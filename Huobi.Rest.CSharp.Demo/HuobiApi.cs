@@ -1,17 +1,15 @@
 ﻿using Huobi.Rest.CSharp.Demo.Model;
-using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
-
+/// <summary>
+/// GitHub:https://github.com/CryptocurrencyToolKits/Huobi.Rest.CSharp.Demo
+/// </summary>
 namespace Huobi.Rest.CSharp.Demo
 {
     public class HuobiApi
