@@ -19,11 +19,11 @@ namespace Huobi.Rest.CSharp.Demo
         /// <summary>
         /// API域名名称
         /// </summary>
-        private const string HUOBI_HOST = "api.huobi.pro";
+        private readonly string HUOBI_HOST = string.Empty;
         /// <summary>
         /// APi域名地址
         /// </summary>
-        private const string HUOBI_HOST_URL = "https://" + HUOBI_HOST;
+        private readonly string HUOBI_HOST_URL = string.Empty;
         /// <summary>
         /// 加密方法
         /// </summary>
@@ -35,11 +35,11 @@ namespace Huobi.Rest.CSharp.Demo
         /// <summary>
         /// ACCESS_KEY
         /// </summary>
-        private const string ACCESS_KEY = "";
+        private readonly string ACCESS_KEY = string.Empty;
         /// <summary>
         /// SECRET_KEY()
         /// </summary>
-        private const string SECRET_KEY = "";
+        private readonly string SECRET_KEY = string.Empty;
         #endregion
 
         #region HuoBiApi接口地址
@@ -49,8 +49,18 @@ namespace Huobi.Rest.CSharp.Demo
 
         #region 构造函数
         private RestClient client;//http请求客户端
-        public HuobiApi()
+        public HuobiApi(string accessKey, string secretKey, string huobi_host = "api.huobi.pro")
         {
+            ACCESS_KEY = accessKey;
+            SECRET_KEY = secretKey;
+            HUOBI_HOST = huobi_host;
+            HUOBI_HOST_URL = "https://" + HUOBI_HOST;
+            if (string.IsNullOrEmpty(ACCESS_KEY))
+                throw new ArgumentException("ACCESS_KEY Cannt Be Null Or Empty");
+            if (string.IsNullOrEmpty(SECRET_KEY))
+                throw new ArgumentException("SECRET_KEY  Cannt Be Null Or Empty");
+            if (string.IsNullOrEmpty(HUOBI_HOST))
+                throw new ArgumentException("HUOBI_HOST  Cannt Be Null Or Empty");
             client = new RestClient(HUOBI_HOST_URL);
             client.AddDefaultHeader("Content-Type", "application/json");
             client.AddDefaultHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36");
