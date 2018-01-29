@@ -4,6 +4,6 @@
 ### Useage:
 ```csharp
     HuobiApi api = new HuobiApi();
-     var result = api.GetAllAccount();
+    var result = api.GetAllAccount();
 ```
 
