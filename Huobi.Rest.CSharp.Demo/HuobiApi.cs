@@ -60,7 +60,7 @@ namespace Huobi.Rest.CSharp.Demo
         #region HuoBiApi方法
         public List<Account> GetAllAccount()
         {
-            var result = HttpGet<List<Account>>(API_ACCOUNBT_ALL);
+            var result = SendRequest<List<Account>>(Method.GET, API_ACCOUNBT_ALL);
             return result.Data;
         }
         #endregion
@@ -73,15 +73,15 @@ namespace Huobi.Rest.CSharp.Demo
         /// <param name="resourcePath"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        private HBResponse<T> HttpGet<T>(string resourcePath, string parameters = "") where T : class, new()
+        private HBResponse<T> SendRequest<T>(Method method, string resourcePath, string parameters = "") where T : class, new()
         {
             parameters = UriEncodeParameterValue(GetCommonParameters() + parameters);//请求参数
-            var sign = GetSignatureStr(HttpMethod.Get, HUOBI_HOST, resourcePath, parameters);//签名
+            var sign = GetSignatureStr(method, HUOBI_HOST, resourcePath, parameters);//签名
             parameters += $"&Signature={sign}";
 
             var url = $"{HUOBI_HOST_URL}{resourcePath}?{parameters}";
             Console.WriteLine(url);
-            var request = new RestRequest(url);
+            var request = new RestRequest(url, method);
             var result = client.Execute<HBResponse<T>>(request);
             return result.Data;
         }
@@ -157,7 +157,7 @@ namespace Huobi.Rest.CSharp.Demo
         /// <param name="resourcePath">资源地址</param>
         /// <param name="parameters">请求参数</param>
         /// <returns></returns>
-        private string GetSignatureStr(HttpMethod method, string host, string resourcePath, string parameters)
+        private string GetSignatureStr(Method method, string host, string resourcePath, string parameters)
         {
             var sign = string.Empty;
             StringBuilder sb = new StringBuilder();
