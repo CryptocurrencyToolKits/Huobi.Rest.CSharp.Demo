@@ -188,7 +188,7 @@ namespace Huobi.Rest.CSharp.Demo
             sign = sb.ToString().TrimEnd('&');
             //计算签名，将以下两个参数传入加密哈希函数
             sign = CalculateSignature256(sign, SECRET_KEY);
-            return sign;
+            return UrlEncode(sign);
         }
         #endregion
 
