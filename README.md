@@ -3,7 +3,7 @@
 
 ### Useage:
 ```csharp
-    HuobiApi api = new HuobiApi();
+    HuobiApi api = new HuobiApi("accessKey","seceretKey");
     var result = api.GetAllAccount();
 ```
 
