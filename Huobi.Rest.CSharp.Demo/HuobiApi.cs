@@ -45,6 +45,7 @@ namespace Huobi.Rest.CSharp.Demo
         #region HuoBiApi接口地址
         private const string API_ACCOUNBT_BALANCE = "/v1/account/accounts/{0}/balance";
         private const string API_ACCOUNBT_ALL = "/v1/account/accounts";
+        private const string API_ORDERS_PLACE = "/v1/order/orders/place";
         #endregion
 
         #region 构造函数
@@ -70,7 +71,13 @@ namespace Huobi.Rest.CSharp.Demo
         #region HuoBiApi方法
         public List<Account> GetAllAccount()
         {
-            var result = SendRequest<List<Account>>(Method.GET, API_ACCOUNBT_ALL);
+            var result = SendRequest<List<Account>>(API_ACCOUNBT_ALL);
+            return result.Data;
+        }
+        public HBResponse<long> OrderPlace(OrderPlaceRequest req)
+        {
+            var bodyParas = new Dictionary<string, string>();
+            var result = SendRequest<HBResponse<long>, OrderPlaceRequest>(API_ORDERS_PLACE, req);
             return result.Data;
         }
         #endregion
@@ -83,15 +90,28 @@ namespace Huobi.Rest.CSharp.Demo
         /// <param name="resourcePath"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        private HBResponse<T> SendRequest<T>(Method method, string resourcePath, string parameters = "") where T : class, new()
+        private HBResponse<T> SendRequest<T>(string resourcePath, string parameters = "") where T : class, new()
         {
             parameters = UriEncodeParameterValue(GetCommonParameters() + parameters);//请求参数
-            var sign = GetSignatureStr(method, HUOBI_HOST, resourcePath, parameters);//签名
+            var sign = GetSignatureStr(Method.GET, HUOBI_HOST, resourcePath, parameters);//签名
             parameters += $"&Signature={sign}";
 
             var url = $"{HUOBI_HOST_URL}{resourcePath}?{parameters}";
             Console.WriteLine(url);
-            var request = new RestRequest(url, method);
+            var request = new RestRequest(url, Method.GET);
+            var result = client.Execute<HBResponse<T>>(request);
+            return result.Data;
+        }
+        private HBResponse<T> SendRequest<T, P>(string resourcePath, P postParaneters) where T : class, new()
+        {
+            var parameters = UriEncodeParameterValue(GetCommonParameters());//请求参数
+            var sign = GetSignatureStr(Method.POST, HUOBI_HOST, resourcePath, parameters);//签名
+            parameters += $"&Signature={sign}";
+
+            var url = $"{HUOBI_HOST_URL}{resourcePath}?{parameters}";
+            Console.WriteLine(url);
+            var request = new RestRequest(url, Method.POST);
+            request.AddObject(postParaneters);
             var result = client.Execute<HBResponse<T>>(request);
             return result.Data;
         }
