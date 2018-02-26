@@ -77,8 +77,8 @@ namespace Huobi.Rest.CSharp.Demo
         public HBResponse<long> OrderPlace(OrderPlaceRequest req)
         {
             var bodyParas = new Dictionary<string, string>();
-            var result = SendRequest<HBResponse<long>, OrderPlaceRequest>(API_ORDERS_PLACE, req);
-            return result.Data;
+            var result = SendRequest<long, OrderPlaceRequest>(API_ORDERS_PLACE, req);
+            return result;
         }
         #endregion
 
@@ -90,7 +90,7 @@ namespace Huobi.Rest.CSharp.Demo
         /// <param name="resourcePath"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        private HBResponse<T> SendRequest<T>(string resourcePath, string parameters = "") where T : class, new()
+        private HBResponse<T> SendRequest<T>(string resourcePath, string parameters = "") where T : new()
         {
             parameters = UriEncodeParameterValue(GetCommonParameters() + parameters);//请求参数
             var sign = GetSignatureStr(Method.GET, HUOBI_HOST, resourcePath, parameters);//签名
@@ -102,7 +102,7 @@ namespace Huobi.Rest.CSharp.Demo
             var result = client.Execute<HBResponse<T>>(request);
             return result.Data;
         }
-        private HBResponse<T> SendRequest<T, P>(string resourcePath, P postParaneters) where T : class, new()
+        private HBResponse<T> SendRequest<T, P>(string resourcePath, P postParameters) where T : new()
         {
             var parameters = UriEncodeParameterValue(GetCommonParameters());//请求参数
             var sign = GetSignatureStr(Method.POST, HUOBI_HOST, resourcePath, parameters);//签名
@@ -111,7 +111,11 @@ namespace Huobi.Rest.CSharp.Demo
             var url = $"{HUOBI_HOST_URL}{resourcePath}?{parameters}";
             Console.WriteLine(url);
             var request = new RestRequest(url, Method.POST);
-            request.AddObject(postParaneters);
+            request.AddJsonBody(postParameters);
+            foreach (var item in request.Parameters)
+            {
+                item.Value = item.Value.ToString().Replace("_", "-");
+            }
             var result = client.Execute<HBResponse<T>>(request);
             return result.Data;
         }
